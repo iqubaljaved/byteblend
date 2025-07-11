@@ -1,2 +1,0 @@
-const supabaseUrl = "https://finxlkrrdmgztytuvmdr.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpbnhsa3JyZG1nenR5dHV2bWRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIxMjgwNTQsImV4cCI6MjA2NzcwNDA1NH0.uqUg-PQK-ss-C5Cjdq9NRi1zk8fr7ivUxaLB6M4_5Iw";
