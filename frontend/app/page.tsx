@@ -1,27 +1,40 @@
-import { client } from '../sanityClient' // 👈 adjust this if your path is different
+'use client'
+import React, { useEffect, useState } from 'react'
+import sanityClient from '../sanityClient'
+import Header from '../components/Header'
+import Footer from '../components/Footer'
+import PostCard from '../components/PostCard'
 
-type Post = {
-  _id: string
-  title: string
-  slug?: { current: string }
-}
+export default function HomePage() {
+  const [posts, setPosts] = useState([])
+  const [loading, setLoading] = useState(true)
 
-export default async function Home() {
-  const posts: Post[] = await client.fetch(`*[_type == "post"]{_id, title, slug}`)
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const query = `*[_type == "post"] | order(publishedAt desc) {
+        _id, title, slug, "author": author->{name, "image": image.asset->url},
+        mainImage{asset->{url}, alt}, "categories": categories[]->{title},
+        publishedAt, "excerpt": pt::text(body[0]), readTime
+      }`
+      const data = await sanityClient.fetch(query)
+      setPosts(data)
+      setLoading(false)
+    }
+
+    fetchPosts()
+  }, [])
+
+  if (loading) return <p>Loading...</p>
 
   return (
-    <main className="p-10 max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Blog Posts</h1>
-      <ul className="space-y-4">
-        {posts.map(post => (
-          <li key={post._id} className="border p-4 rounded">
-            <h2 className="text-xl">{post.title}</h2>
-            {post.slug?.current && (
-              <p className="text-sm text-gray-500">Slug: {post.slug.current}</p>
-            )}
-          </li>
+    <>
+      <Header />
+      <main className="container mx-auto px-4 py-12 space-y-10">
+        {posts.map((post) => (
+          <PostCard key={post._id} post={post} />
         ))}
-      </ul>
-    </main>
+      </main>
+      <Footer />
+    </>
   )
 }
